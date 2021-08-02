@@ -9,7 +9,7 @@ Created on Fri Jun 25 16:39:35 2021
 #for passwords and credentials customize the following file:
     
 credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
-               'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if other clusters are involved
+               'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved
                'url_cluster1':'https://expe1a.example.com', #URL for cluster1 (usually to the primary peer); the URL should include the port if different from 443 (see below)
                'url_cluster2':'https://expe2a.example.com:7443', #URL for cluster2 (includes port 7443 as admin HTTPS traffic uses this port)
                'expe1a.example.com':['admin', 'password1a'], #username and password for all peers in all clusters (see below)
