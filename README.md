@@ -8,7 +8,10 @@ HOW TO RUN
 
 Customize the credentials.py file. This file contains the local settings: FQDN, IP addresse, username and password of every Expressway, Webex room ID, bot beaerer, and IPWhois token.
 Copy the files in a directory of the server that will run the scripts
-Launch ipjail.py file. This file runs once, and searches for banned IP addresses in Expressway. When found, sends a notification in the Webex space. In order to make it recurrent, use Crontab (Linux) or Task Scheduler (Windows). This is an example with Crontab and a Python virtual environment in CentOS 8: 0 * * * * cd /root/working_directory && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py >> cron.log 2>&1
+Launch ipjail.py file. This file runs once, and searches for banned IP addresses in Expressway. When found, sends a notification in the Webex space. In order to make it recurrent, use Crontab (Linux) or Task Scheduler (Windows). This is an example with Crontab and a Python virtual environment in CentOS 8: 
+
+    0 * * * * cd /root/working_directory && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py >> cron.log 2>&1
+    
 Launch listening_bot.py. This script requires Websocket Webex Bot: https://github.com/fbradyirl/webex_bot. It allows the admin to interact with the notification system.
 Dependencies:
 
