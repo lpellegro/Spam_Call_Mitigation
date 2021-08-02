@@ -70,7 +70,7 @@ credentials = {'expe_cluster1':'expe1a.example.com',
 
                'roomID':'abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789', 
                'bearer':'MNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQ-09876-54321-012345678', 
-               'apikey':'ab_CDEFGHILMNOPQRST0123', #API key to perform IP address lookup on https://www.whoisxmlapi.com
+               'apikey':'ab_CDEFGHILMNOPQRST0123', 
 
                'jailed_file':'/var/www/html/jailedIP.txt', 
                'exempt_file':'/var/www/html/exemptions.txt', 
