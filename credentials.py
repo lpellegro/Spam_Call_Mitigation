@@ -6,7 +6,8 @@ Created on Fri Jun 25 16:39:35 2021
 @author: lpellegr
 """
 
-#For passwords and credentials customize the following file. Following a template config for 2 different clusters, one with 2 Expressway-E and another with 3
+#For passwords and credentials customize the following file. Following a template config for 2 different clusters, one with 2 Expressway-E and another with 3.
+#Item order is not relevant
 
 credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
                'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved
@@ -44,6 +45,32 @@ credentials = {'expe_cluster1':'expe.example.com',
                'state_machine':'/var/www/html/card_status.csv',
                'activity_list_path':'/var/www/html/'}
 
+Example for two clusters
+
+credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
+               'url_cluster1':'https://expe1a.example.com', #URL for cluster1 (usually to the primary peer); the URL should include the port if different from 443 (see below)
+               'expe1a.example.com':['admin', 'password1a'], #username and password for all peers in all clusters (see below)
+               'expe1b.example.com':['admin', 'password1b'],  
+               '192.0.2.201':'expe1a.example.com', #IP addresses for all peers in all clusters
+               '192.0.2.202':'expe1b.example.com', 
+
+               'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved
+               'url_cluster2':'https://expe2a.example.com:7443', #URL for cluster2 (includes port 7443 as admin HTTPS traffic uses this port)
+               'expe2a.example.com':['admin', 'password2a'], 
+               'expe2b.example.com':['admin', 'password2b'], 
+               'expe2c.example.com':['admin', 'password2c'],
+               '203.0.113.201':'expe2a.example.com',
+               '203.0.113.202':'expe2b.example.com',
+               '203.0.113.203':'expe2c.example.com',
+
+               'roomID':'abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789', #Webex room ID to send and receive notifications
+               'bearer':'MNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQ-09876-54321-012345678', #Webex Bot Bearer 
+               'apikey':'ab_CDEFGHILMNOPQRST0123', #API key to perform IP address lookup on https://www.whoisxmlapi.com
+
+               'jailed_file':'/var/www/html/jailedIP.txt', 
+               'exempt_file':'/var/www/html/exemptions.txt', 
+               'state_machine':'/var/www/html/card_status.csv', 
+               'activity_list_path':'/var/www/html'} 
 """
 
 
