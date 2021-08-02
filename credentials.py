@@ -35,7 +35,7 @@ credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary p
 credentials = {'expe_cluster1':'expe.example.com', 
                'url_cluster1':'https://expe.example:7443',
                'expe.example.com':['administrator', 'mysecret'], 
-               '192.0.2.301':'expe1a.example.com',
+               '192.0.2.301':'expe.example.com',
                'roomID':'abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789',
                'bearer':'MNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQMNBVCXZLKJGHGFDSAPOIUYTREWQ-09876-54321-012345678',
                'apikey':'ab_CDEFGHILMNOPQRST0123',
