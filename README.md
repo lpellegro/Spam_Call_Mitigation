@@ -1,8 +1,10 @@
 # Banned_IP_Notification
-These scripts send notifications to a Webex space when a new IP is banned by Expressway
+
+Cisco Expressway release X14 is able to mitigate spam calls and toll fraud by jailing the spam IP source addresses, thus offloading Expressway by unwanted calls and reducing the impact of toll fraud. 
 
 This is a bundle made by 2 independent scripts. The first one - ipjail.py - sends a notification card to a Webex space whenever a new IP is banned on a monitored Expressway. 
 The second script - listening_bot.py - allows the admin to interact with the bot by changing the status of an IP between 4 different statuses (ban/unban/exempt/remove exemption) and request the call activity list of a banned IP.
+The remaining scripts are used by one or the other and only need to be in the same folder with the two main ones.
 
 HOW TO RUN
 
@@ -14,6 +16,8 @@ Launch ipjail.py file. This file runs once, and searches for banned IP addresses
     
 Launch listening_bot.py. This script requires Websocket Webex Bot: https://github.com/fbradyirl/webex_bot. It allows the admin to interact with the notification system.
 Dependencies:
+
+- Python 3.9
 
 - pip install webex_bot
 - pip install request requests
