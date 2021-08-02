@@ -21,6 +21,6 @@ Dependencies:
 - Python 3.9
 
 - pip install webex_bot
-- pip install request requests
+- pip install requests
 - pip install paramiko
 - pip install openpyxl
