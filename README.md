@@ -8,7 +8,7 @@ The rest of the scripts need to be in the same folder with the two main ones.
 
 HOW TO RUN
 
-1. Customize the credentials.py file. This file contains the local settings: FQDN, IP addresse, username and password of every Expressway, Webex room ID, bot beaerer, and IPWhois token.
+1. Customize the credentials.py file. This file contains the local settings: FQDN, IP address, username and password of every Expressway, Webex room ID, bot bearer, and IPWhois token.
 2. Copy the files in a directory of the server that will run the scripts
 3. Launch ipjail.py file. This file runs once and searches for banned IP addresses in Expressway. When found, sends a notification in the Webex space. In order to make it run periodically, use Crontab (Linux) or Task Scheduler (Windows). This is an example with Crontab in CentOS 8 for a script running every hour in the folder working_directory within a virtual environment: 
 
