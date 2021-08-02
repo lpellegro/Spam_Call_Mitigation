@@ -105,10 +105,6 @@ def banunban(target, user, secret, ip, action, space):
        apicommand='banip'
        apiaction='ban'
     data={'command':apicommand, 'jail':'sip-auth', 'argument': ip}
-    #if target includes an IP address instead of hostname the REST API will generate an error. The following is to convert the IP into FQDN. Remember to append the port to the IP, i.e. 192.0.2.1:902
-    #if target in credentials:
-       #dnsname = credentials[target]
-       #target = str(dnsname)
     url='https://'+ target +'/api/management/commands/fail2ban'
     print ('sending API request to: ', url)
     error = ''
@@ -375,6 +371,4 @@ class ExpeCommand(Command):
         
         
    
-        #return quote_info(attachment_actions.inputs.get("Got the exempt message"))
-        #return quote_info(attacihment_actions.inputs.get("message_typed"))
                   

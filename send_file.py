@@ -190,6 +190,5 @@ class SendfileCommand(Command):
                   'Content-Type': m.content_type})
 
         print (r.text)                
-        #return quote_info(attachment_actions.inputs.get("File sent"))
         
 

@@ -24,9 +24,9 @@ def column(array, i):
     return [row[i] for row in array]
 
 def local_peer (url, peer):
-    parsed_url = urllib.parse.urlparse(url).netloc #take the LHS of the URL to identify the cluster in the response. returns https://us-expe1.ent-pa.com:80 (with port)
-    expe_list = parsed_url.split(':') #splits into a list: ['https://us-expe1.ent-pa.com', '80']
-    expe_ip = expe_list[0] #'https://us-expe1.ent-pa.com' this is the master
+    parsed_url = urllib.parse.urlparse(url).netloc #take the LHS of the URL to identify the cluster in the response. returns https://expe1.example.com:7443 (with port)
+    expe_list = parsed_url.split(':') #splits into a list: ['https://expe1.example.com', '7443']
+    expe_ip = expe_list[0] #'https://expe1.example.com' this is the master
         
     if peer == '127.0.0.1':
        peer = expe_ip #equal to master if single peer
