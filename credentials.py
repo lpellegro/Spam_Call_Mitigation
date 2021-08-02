@@ -33,7 +33,7 @@ credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary p
 """ Example for a single peer cluster with user 'administrator' and password 'mysecret' that uses port 7443 as admin port
 
 credentials = {'expe_cluster1':'expe.example.com', 
-               'url_cluster1':'https://expe.example:7443',
+               'url_cluster1':'https://expe.example.com:7443',
                'expe.example.com':['administrator', 'mysecret'], 
                '192.0.2.301':'expe.example.com',
                'roomID':'abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789abcdefghilmnopqrstuvz0123456789',
