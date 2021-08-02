@@ -8,6 +8,8 @@ Created on Fri Jun 25 16:39:35 2021
 
 #For passwords and credentials customize the following file. Following a template config for 2 different clusters, one with 2 Expressway-E and another with 3.
 #Item order is not relevant
+#CHANGE THIS:
+#----------------------------------------------------------------------------------
 
 credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
                'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved
@@ -30,8 +32,11 @@ credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary p
                'exempt_file':'<folder_path>/exemptions.txt', #example: '/var/www/html/exemptions.txt'
                'state_machine':'<folder_path>/card_status.csv', #example: '/var/www/html/card_status.csv'
                'activity_list_path':'<folder_path>'} #example: '/var/www/html/'
+#--------------------------------------------------------------------------------------
 
-""" Example for a single peer cluster with user 'administrator' and password 'mysecret' that uses port 7443 as admin port
+#EXAMPLES
+
+""" Single peer cluster with user 'administrator' and password 'mysecret' that uses port 7443 as admin port
 
 credentials = {'expe_cluster1':'expe.example.com', 
                'url_cluster1':'https://expe.example.com:7443',
@@ -45,7 +50,7 @@ credentials = {'expe_cluster1':'expe.example.com',
                'state_machine':'/var/www/html/card_status.csv',
                'activity_list_path':'/var/www/html/'}
 
-Example for two clusters, 2 and 3 peers, one with standard admin port and another using 7443. Same username and passwords.
+Two clusters, 2 and 3 peers, one with standard admin port and another using 7443. Same username and passwords.
 
 credentials = {'expe_cluster1':'expe1a.example.com', 
                'url_cluster1':'https://expe1a.example.com',
