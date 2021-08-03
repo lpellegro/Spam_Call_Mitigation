@@ -38,7 +38,8 @@ Dependencies:
 5. Install a virtual environment on this directory:
    ```
    cd notifications
-   python3.9 -m venv ~/.virtualenvs/${PWD##*/}source ~/.virtualenvs/${PWD##*/}/bin/activate
+   python3.9 -m venv ~/.virtualenvs/${PWD##*/}
+   source ~/.virtualenvs/${PWD##*/}/bin/activate
    ```
 4. Install the following packages:
 - pip install webex_bot
