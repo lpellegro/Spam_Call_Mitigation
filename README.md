@@ -56,8 +56,10 @@ Dependencies:
    ```
 8. Test the listening bot by typing "python3.9 listening_bot.py". Then set it up as a service that will be restarted in case of issues:
    
-   
+```
 vi /etc/systemd/system/webex_bot.service
+```
+
 ```
 [Unit]
 Description="Webex bot with websocket"
