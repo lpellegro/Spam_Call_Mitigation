@@ -27,8 +27,8 @@ Dependencies:
 
 STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
 1. Install Python3.9 
-2. Create a new directory (in this example is called "notifications"): mkdir notifications
-3. Install a virtual environment on this directory:
+3. Create a new directory (in this example is called "notifications"): mkdir notifications
+4. Install a virtual environment on this directory:
    cd notifications
    python3.9 -m venv ~/.virtualenvs/${PWD##*/}
    source ~/.virtualenvs/${PWD##*/}/bin/activate
@@ -36,6 +36,7 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
    pip install requests
    pip install paramiko
    pip install openpyxl
+   
 5. Download the script from GitHub and customise the credentials.py file as explained in the file itself (some examples are also reported. Pay attention to commas)
    https://github.com/lpellegro/Banned_IP_Notification
 6. Test the script by running "python3.9 ipjail.py". If credentials.py has been customised correctly the script should run. The script connects to Expressway using HTTPS. If Expressway uses a private cert, the CA must be trusted by the server running the script.
