@@ -31,8 +31,11 @@ Dependencies:
 
 # **STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8**
 1. Install Python3.9 
-3. Create a new directory (in this example is called "notifications"): mkdir notifications
-4. Install a virtual environment on this directory:
+3. Create a new directory (in this example is called "notifications"): 
+   ```
+   mkdir notifications
+   ```
+5. Install a virtual environment on this directory:
    ```
    cd notifications
    python3.9 -m venv ~/.virtualenvs/${PWD##*/}source ~/.virtualenvs/${PWD##*/}/bin/activate
