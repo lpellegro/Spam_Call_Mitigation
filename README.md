@@ -56,7 +56,7 @@ Dependencies:
    ```
    0 * * * * cd  /root/notifications && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py  >> cron.log 2>&1
    ```
-8. Test the listening bot by typing ```python3.9 listening_bot.py```. Then set it up as a service that will be restarted in case of issues:
+8. Test the listening bot by typing ```python3.9 listening_bot.py```. Then set it up as a service that will be automatically restarted:
    
 ```
 vi /etc/systemd/system/webex_bot.service
@@ -79,6 +79,7 @@ WantedBy=multi-user.target
 ```
 9. Run the service: 
    ```
+   systemctl enable webex_bot.service
    systemctl start webex_bot.service
    ```
 11. Check the status: 
