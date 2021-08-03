@@ -30,8 +30,7 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
 3. Create a new directory (in this example is called "notifications"): mkdir notifications
 4. Install a virtual environment on this directory:
    cd notifications
-   python3.9 -m venv ~/.virtualenvs/${PWD##*/}
-   source ~/.virtualenvs/${PWD##*/}/bin/activate
+   python3.9 -m venv ~/.virtualenvs/${PWD##*/}source ~/.virtualenvs/${PWD##*/}/bin/activate
 4. pip install webex_bot
    pip install requests
    pip install paramiko
