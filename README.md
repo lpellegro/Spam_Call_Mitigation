@@ -32,10 +32,11 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
 4. Install a virtual environment on this directory:
    cd notifications
    python3.9 -m venv ~/.virtualenvs/${PWD##*/}source ~/.virtualenvs/${PWD##*/}/bin/activate
-4. pip install webex_bot
-   pip install requests
-   pip install paramiko
-   pip install openpyxl
+4. Install the following packages:
+- pip install webex_bot
+- pip install requests
+- pip install paramiko
+- pip install openpyxl
    
 5. Download the script from GitHub and customise the credentials.py file as explained in the file itself (some examples are also reported. Pay attention to commas)
    https://github.com/lpellegro/Banned_IP_Notification
@@ -44,22 +45,21 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
    0 * * * * cd  /root/notifications && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py  >> cron.log 2>&1
 8. Test the listening bot by typing "python3.9 listening_bot.py". Then set it up as a service that will be restarted in case of issues:
    
-   vi /etc/systemd/system/webex_bot.service
+vi /etc/systemd/system/webex_bot.service
 
+[Unit]
+Description="Webex bot with websocket"
 
-   [Unit]
-   Description="Webex bot with websocket"
+[Service]
+User=root
+WorkingDirectory=/root/notifications
+VIRTUAL_ENV=/root/.virtualenvs/notifications/
+Environment=PATH=$VIRTUAL_ENV/bin:$PATH
+ExecStart=/root/.virtualenvs/notifications/bin/python3.9 listening_bot.py
+Restart=always
 
-   [Service]
-   User=root
-   WorkingDirectory=/root/notifications
-   VIRTUAL_ENV=/root/.virtualenvs/notifications/
-   Environment=PATH=$VIRTUAL_ENV/bin:$PATH
-   ExecStart=/root/.virtualenvs/notifications/bin/python3.9 listening_bot.py
-   Restart=always
-
-   [Install]
-   WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
 
 9. Run the service: systemctl start webex_bot.service
 10. Check the status: systemctl status webex_bot.service
