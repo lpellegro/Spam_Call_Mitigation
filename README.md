@@ -42,10 +42,12 @@ Dependencies:
    source ~/.virtualenvs/${PWD##*/}/bin/activate
    ```
 4. Install the following packages:
-- pip install webex_bot
-- pip install requests
-- pip install paramiko
-- pip install openpyxl
+   ```
+   pip install webex_bot
+   pip install requests
+   pip install paramiko
+   pip install openpyxl
+   ```
    
 5. Download the script from GitHub and customise the credentials.py file as explained in the file itself (some examples are also reported. Pay attention to commas)
    https://github.com/lpellegro/Banned_IP_Notification
