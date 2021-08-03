@@ -45,6 +45,7 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
    0 * * * * cd  /root/notifications && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py  >> cron.log 2>&1
 8. Test the listening bot by typing "python3.9 listening_bot.py". Then set it up as a service that will be restarted in case of issues:
    
+   
 vi /etc/systemd/system/webex_bot.service
 
 [Unit]
