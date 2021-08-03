@@ -24,3 +24,43 @@ Dependencies:
 - pip install requests
 - pip install paramiko
 - pip install openpyxl
+
+STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
+1. Install Python3.9 
+2. Create a new directory (in this example is called "notifications"): mkdir notifications
+3. Install a virtual environment on this directory:
+   cd notifications
+   python3.9 -m venv ~/.virtualenvs/${PWD##*/}
+   source ~/.virtualenvs/${PWD##*/}/bin/activate
+4. pip install webex_bot
+   pip install requests
+   pip install paramiko
+   pip install openpyxl
+5. Download the script from GitHub and customise the credentials.py file as explained in the file itself (some examples are also reported. Pay attention to commas)
+   https://github.com/lpellegro/Banned_IP_Notification
+6. Test the script by running "python3.9 ipjail.py". If credentials.py has been customised correctly the script should run. The script connects to Expressway using HTTPS. If Expressway uses a private cert, the CA must be trusted by the server running the script.
+7. If the test is successful, configure Crontab to run the script periodically by typing: "crontab -e" and the the following (the script runs every hour)
+   0 * * * * cd  /root/notifications && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py  >> cron.log 2>&1
+8. Test the listening bot by typing "python3.9 listening_bot.py". Then set it up as a service that will be restarted in case of issues:
+   
+   vi /etc/systemd/system/webex_bot.service
+
+
+   [Unit]
+   Description="Webex bot with websocket"
+
+   [Service]
+   User=root
+   WorkingDirectory=/root/notifications
+   VIRTUAL_ENV=/root/.virtualenvs/notifications/
+   Environment=PATH=$VIRTUAL_ENV/bin:$PATH
+   ExecStart=/root/.virtualenvs/notifications/bin/python3.9 listening_bot.py
+   Restart=always
+
+   [Install]
+   WantedBy=multi-user.target
+
+9. Run the service: systemctl start webex_bot.service
+10. Check the status: systemctl status webex_bot.service
+11. To stop the service: systemctl stop webex_bot.service
+
