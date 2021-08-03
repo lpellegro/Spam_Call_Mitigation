@@ -28,7 +28,7 @@ credentials = {#EXPRESSWAY SECTION
                '203.0.113.201':'expe2a.example.com',
                '203.0.113.202':'expe2b.example.com',
                '203.0.113.203':'expe2c.example.com',
-               #Add more clusters if present
+               #Add more clusters if required
                #......
                #CLOUD SECTION
                'roomID':'<Your Webex room ID>', #Webex room ID to send and receive notifications
