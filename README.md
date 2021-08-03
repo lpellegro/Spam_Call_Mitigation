@@ -1,4 +1,4 @@
-# Banned_IP_Notification
+# Spam Call and Toll Fraud Mitigation
 
 Cisco Expressway release X14 is able to mitigate spam calls and toll fraud attempts by jailing the spam IP address, thus offloading Expressway by unwanted calls and reducing the impact of toll fraud. 
 
