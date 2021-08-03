@@ -11,23 +11,30 @@ Created on Fri Jun 25 16:39:35 2021
 #CHANGE THIS:
 #----------------------------------------------------------------------------------
 
-credentials = {'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
-               'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved
-               'url_cluster1':'https://expe1a.example.com', #URL for cluster1 (usually to the primary peer); the URL should include the port if different from 443 (see below)
-               'url_cluster2':'https://expe2a.example.com:7443', #URL for cluster2 (includes port 7443 as admin HTTPS traffic uses this port)
-               'expe1a.example.com':['admin', 'password1a'], #username and password for all peers in all clusters (see below)
+credentials = {#EXPRESSWAY SECTION
+               #Cluster 1
+               'expe_cluster1':'expe1a.example.com', #FQDN of cluster1 primary peer
+               'url_cluster1':'https://expe1a.example.com', #URL for cluster1 (usually to the primary peer); the URL should include the port if different from 443 
+               'expe1a.example.com':['admin', 'password1a'], #username and password for all peers in all clusters 
                'expe1b.example.com':['admin', 'password1b'],
+               '192.0.2.201':'expe1a.example.com', #IP addresses for all peers in all clusters
+               '192.0.2.202':'expe1b.example.com', 
+               #Cluster 2 (remove if not present)
+               'expe_cluster2':'expe2a.example.com', #FQDN of cluster2 primary peer; add more lines if more clusters are involved 
+               'url_cluster2':'https://expe2a.example.com:7443', #URL for cluster2 (includes port 7443 as admin HTTPS traffic uses this port)
                'expe2a.example.com':['admin', 'password2a'], 
                'expe2b.example.com':['admin', 'password2b'], 
                'expe2c.example.com':['admin', 'password2c'],
-               '192.0.2.201':'expe1a.example.com', #IP addresses for all peers in all clusters
-               '192.0.2.202':'expe1b.example.com', 
                '203.0.113.201':'expe2a.example.com',
                '203.0.113.202':'expe2b.example.com',
                '203.0.113.203':'expe2c.example.com',
+               #Add more clusters if present
+               #......
+               #CLOUD SECTION
                'roomID':'<Your Webex room ID>', #Webex room ID to send and receive notifications
                'bearer':'<Your Webex Bearer>', #Webex Bot Bearer 
                'apikey':'<Your WhoisXMLAPI Key>', #API key to perform IP address lookup on https://www.whoisxmlapi.com
+               #LOCAL FILE SECTION
                'jailed_file':'<folder_path>/jailedIP.txt', #example: '/var/www/html/jailedIP.txt'
                'exempt_file':'<folder_path>/exemptions.txt', #example: '/var/www/html/exemptions.txt'
                'state_machine':'<folder_path>/card_status.csv', #example: '/var/www/html/card_status.csv'
