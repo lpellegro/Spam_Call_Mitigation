@@ -33,7 +33,7 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
    cd notifications
    python3.9 -m venv ~/.virtualenvs/${PWD##*/}source ~/.virtualenvs/${PWD##*/}/bin/activate
 4. pip install webex_bot
-5. pip install requests
+   pip install requests
    pip install paramiko
    pip install openpyxl
    
