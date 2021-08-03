@@ -47,7 +47,7 @@ STEP-BY-STEP INSTRUCTIONS FOR CENTOS 8
    
    
 vi /etc/systemd/system/webex_bot.service
-
+```
 [Unit]
 Description="Webex bot with websocket"
 
@@ -61,7 +61,7 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-
+```
 9. Run the service: systemctl start webex_bot.service
 10. Check the status: systemctl status webex_bot.service
 11. To stop the service: systemctl stop webex_bot.service
