@@ -6,36 +6,45 @@ This is a bundle made by 2 independent scripts. The first one - ipjail.py - send
 The second script - listening_bot.py - allows the admin to interact with the bot by changing the status of an IP between 4 different statuses (ban/unban/exempt/remove exemption) and to request the call activity list of a banned IP.
 The rest of the scripts need to be in the same folder with the two main ones.
 
-HOW TO RUN
-
-1. Customize the credentials.py file. This file contains the local settings: FQDN, IP address, username and password of every Expressway, Webex room ID, bot bearer, and IPWhois token.
-2. Copy the files in a directory of the server that will run the scripts.
-3. Launch ipjail.py file. This file runs once and searches for banned IP addresses in Expressway. When found, sends a notification in the Webex space. In order to make it run periodically, use Crontab (Linux) or Task Scheduler (Windows). This is an example with Crontab in CentOS 8 for a script running every hour in the folder working_directory within a virtual environment: 
-```
-    0 * * * * cd /root/working_directory && source ~/.virtualenvs/${PWD##*/}/bin/activate && python3.9 ipjail.py >> cron.log 2>&1
-```
-4. Launch listening_bot.py. This script requires Websocket Webex Bot: https://github.com/fbradyirl/webex_bot. It allows the admin to interact with the notification system. To make it always running convert it into a service by using systemd. This will make sure that the service is automatically restarted in case of errors.
-
 Dependencies:
-
 - Python 3.9
-
 - pip install webex_bot
 - pip install requests
 - pip install paramiko
 - pip install openpyxl
 
+# Step-by-step Installation Instructions
+* Create a Webex bot and store the bot Access Token
+* Create a Webex space and store the room ID
+* Register to https://www.whoisxmlapi.com and get an API Key for whois lookup
+* Install and run the script. The following instructions apply to CentOS 8, but other platforms might be considered
 
+## Create a Webex bot
 
+Register to developer.webex.com. Click on your name in the right upper corner, select "My Webex Apps" and the option "Create a Bot". Copy and store the Access Token:
 
+<img width="1897" alt="Copy the Access" src="https://user-images.githubusercontent.com/88320330/128480031-c5f74719-6149-45c4-85b2-1cefaca2d6d8.png">
 
-# **Step-by-step Instructions for CentOS 8**
+## Create a Webex space
+1. Use the bot access token to create a room: go to https://developer.webex.com/docs/platform-introduction, select "API Reference" on the left-hand side, scroll down to "Rooms", then click on "Create a room". On the right-hand side uncheck "Use personal access token" and paste the bot access token. Put a name in the "title" box (i.e. "My Space") and then hit "Run". Copy the and store the room ID.
+
+<img width="1247" alt="Copy the room ID" src="https://user-images.githubusercontent.com/88320330/128480164-dd4f7c54-dbb4-47ec-a548-5b8c604e848f.png">
+
+2. Add yourself in the room as a member: go to Memberships -> Create a Membership
+
+<img width="1677" alt="Paste the Access" src="https://user-images.githubusercontent.com/88320330/128480307-4f937c82-2162-434d-b235-0de822cf4e8f.png">
+
+## Get an API Key for Whois lookup
+
+Go to https://www.whoisxmlapi.com and register. Click on your username in the right-hand side upper corner and select "My Products". Your API Key will be shown. Store your API Key.
+
+##  Run the scripts in CentOS 8
 1. Install Python3.9 
-3. Create a new directory (in this example is called "notifications"): 
+2. Create a new directory (in this example is called "notifications"): 
    ```
    mkdir notifications
    ```
-5. Install a virtual environment on this directory:
+3. Install a virtual environment on this directory:
    ```
    cd notifications
    python3.9 -m venv ~/.virtualenvs/${PWD##*/}
