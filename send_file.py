@@ -1,7 +1,6 @@
 import requests
 import json
 import os
-from ipwhois import IPWhois
 from csv import writer
 from datetime import datetime
 from datetime import date
