@@ -15,6 +15,8 @@ import csv
 from cards_new import Card_3_buttons, Card_2_buttons
 from credentials import credentials
 
+#THIS SCRIPT WORKS WITH WEBEX_BOT. IT IS TRIGGERED WHEN A USER REQUESTS TO CHANGE THE BAN OR EXEMPT STATUS
+
 log = logging.getLogger(__name__)
 
 def terminal(target, user, password, action, ip, space):

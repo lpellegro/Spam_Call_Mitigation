@@ -14,6 +14,8 @@ from webex_bot.cards.echo_card import ECHO_CARD_CONTENT
 from webex_bot.formatting import quote_info
 from credentials import credentials
 
+#THIS SCRIPT WORKS TOGETHER WITH WEBEX_BOT. WHEN "MORE INFO" IS PUSHED, IT RETURNS THE CALL ACTIVITY LIST
+
 def cdrcheck(expe, username, secret, newip):
     
     new_url='https://' + expe + '/api/management/status/call/call'
