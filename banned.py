@@ -244,7 +244,8 @@ def send_card (any_list, url, action_file, today, space, bearer, new_peer, unban
         #print(values_string, type(values_string))
         
 
-        
+        print ('This card has parsed url =', parsed_url)
+        print ('This card has peer =', peer)
         webex_url="https://webexapis.com/v1/messages"
         headers = {
   'Authorization': 'Bearer ' + bearer,

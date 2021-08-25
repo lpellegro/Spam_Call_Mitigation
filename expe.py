@@ -15,6 +15,7 @@ import csv
 from cards_new import Card_3_buttons, Card_2_buttons
 from credentials import credentials
 
+
 #THIS SCRIPT WORKS WITH WEBEX_BOT. IT IS TRIGGERED WHEN A USER REQUESTS TO CHANGE THE BAN OR EXEMPT STATUS
 
 log = logging.getLogger(__name__)
@@ -192,65 +193,75 @@ def updatefiles(ip_address, execution, exemption_list, jailed_list):
        for i in range(l):
          j.write(j_array_items[i] + "\n")
        j.close()    
-    
 
-class ExpeCommand(Command):
 
-    def __init__(self):
-        super().__init__(
-            command_keyword="callback___exempt",
-            help_message="Exempt an IP",
-            card=ECHO_CARD_CONTENT)
+def check_unban_all (ip, expe, peer):
+      #get the other cluster peers
+      unban_list = []
+      port = ''
+      expe_ip, peer, peer_with_port = ip_port_info (expe, peer)      
+      expe_list = peer_with_port.split(':')
+      if len (expe_list) > 1:
+         port = expe_list[1]
+      username = credentials[expe_ip][0]
+      secret = credentials[expe_ip][1]
+      ban_url = 'https://' + peer_with_port + '/api/management/status/fail2banbannedaddress' #banned_url_portion
+         
+      print("Query sent to:", ban_url)
+      try:
+         response = requests.get(ban_url, auth=HTTPBasicAuth(username, secret))
+         storage=response.json()
+         print ('Lenght of answer is:', len(storage))
+         if len(storage)==0:
+           print("JSON empty answer")
+           return unban_list
+      except requests.exceptions.ConnectionError:
+           print ('Connection error')
+           return unban_list
+      storindex=len(storage)
+      print("This is a cluster of", storindex, "peers")
+      for i in range(storindex):
+       lenght=len(storage[i]['records'])
+       print("Parsing peer", i)
+       current_peer=storage[i]['peer']
+       expe_cluster, peer_normalized, peer_norm = ip_port_info(expe_ip, current_peer) #note: due to the query, peer_norm doesn't include the port
+       print ('In check_unban_all, these are expe_cluster, peer_normalized, peer_norm ' + expe_cluster + ' ' + peer_normalized + ' ' + peer_norm)
+       for j in range(lenght):
+           if storage[i]['records'][j]['jail'] == 'sip-auth' and ip == storage[i]['records'][j]['banned_address']:
+              if port != '':
+                 current_peer = peer_normalized + ':' + port
+              unban_list.append (peer_normalized)
 
-    def execute(self, message, attachment_actions):
-        """
-        If you want to respond to a submit operation on the card, you
-        would write code here!
+      return unban_list
 
-        You can return text string here or even another card (Response).
-
-        This sample command function simply echos back the sent message.
-
-        :param message: message with command already stripped
-        :param attachment_actions: attachment_actions object
-        :return: a string or Response object. Use Response if you want to return another card.
-        """
-        #exempt on Expressway
-        
-        room_id = credentials['roomID']
-        jailed_file = credentials['jailed_file']
-        exempt_file = credentials['exempt_file']
-        state_machine = credentials['state_machine']
-        bearer = credentials['bearer']
-        print ('ATTACHMENT ACTIONS: ', attachment_actions, ' TYPE: ', type(attachment_actions))
-        jsonstr = json.dumps (attachment_actions.__dict__)
-        print('TYPE JSONSTR AND JSONSTR ARE: ', type(jsonstr), jsonstr)
-        json_actions = json.loads(jsonstr)
-        ip = json_actions['_json_data']['inputs']['IP']
-        action = json_actions['_json_data']['inputs']['action']
-        expe = json_actions['_json_data']['inputs']['expe']
-        peer = json_actions['_json_data']['inputs']['peer']
-        day = json_actions['_json_data']['inputs']['time']
-        print('IP IS: ', ip, ' ACTION IS: ', action, ' EXPE IS: ', expe, 'PEER IS: ', peer) 
-        
-        expe_list = expe.split(':')
+def ip_port_info (expe, peer):
+      expe_list = expe.split(':')
  
-        expe_ip = expe_list[0]
-        if peer == '127.0.0.1':
-           peer = expe_ip
+      expe_ip = expe_list[0]
+      if peer == '127.0.0.1':
+         peer = expe_ip
         
-        if len(expe_list) == 1: #use of standard port for https (443)
-           peer_with_port = peer
+      if len(expe_list) == 1: #use of standard port for https (443)
+         peer_with_port = peer
  
-        if len (expe_list) > 1:
-           peer_with_port = peer + ':' + expe_list[1]
+      if len (expe_list) > 1:
+         peer_with_port = peer + ':' + expe_list[1]
+      return expe_ip, peer, peer_with_port
+        
+      
+
+def change_status (room_id, jailed_file, exempt_file, state_machine, bearer, ip, action, expe, peer, day, ban_expired):
+
+        expe_ip, peer, peer_with_port = ip_port_info(expe, peer)
         #case of cluster made by 1 peer, with standard or dedicated port
-        
+        print('function change_status, expe_ip is: ', expe_ip)
         user=credentials[expe_ip][0]
         secret=credentials[expe_ip][1]
         
         print('Peer to connect to with port is: ', peer_with_port)
-        if action == 'ban' or action == 'unban':
+        if action == 'unban' and ban_expired == True:
+           error = ''
+        if action == 'ban' or action == 'unban' and ban_expired == False:
            error = banunban(peer_with_port, user, secret, ip, action, room_id)
         if action == 'exempt' or action == 'unexempt':
            done=terminal(expe_ip, user, secret, action, ip, room_id)
@@ -258,20 +269,22 @@ class ExpeCommand(Command):
            if 'error' in done or done == 'FAILED':
               error = 'error'
               fqdnexpe = expe.split(":", 1)[0] #split the fqdn in 2 pieces and removes the :port
-              values={'roomId': room_id, 'markdown':'Generic error or unable to connect to '+fqdnexpe}
+              values={'roomId': room_id, 'markdown':'Generic error or unable to connect to ' + fqdnexpe}
            else:
               error = ''
         if error == '':
           updatefiles(ip, action, exempt_file, jailed_file)
           state_index = ip + ':' + peer
+          print ('State index is:', state_index)
           banned_counter = 0
           unbanned_counter = 0
           with open(state_machine, newline='') as a_f:
             reader = csv.reader(a_f)
             action_list = list(reader)
-            print(action_list)
+            #print(action_list)
             for i, v in enumerate(action_list):
               if v[0] == state_index:
+                 print ('Found previous state for this IP: ', v[0])
                  post_id = action_list [i][1]
                  banned_counter = int(action_list [i][3])
                  unbanned_counter = int(action_list [i][4])
@@ -282,9 +295,11 @@ class ExpeCommand(Command):
                  #status_id = action_list [i][2]
                  print ('post id is: ', post_id)
                  #print ('status id is: ', status_id)
-            delete_url = 'https://webexapis.com/v1/messages/' + post_id
-            webex_delete = requests.delete (delete_url, headers={'Authorization': 'Bearer ' + bearer})
-            action_list.remove (action_list[i])
+                 delete_url = 'https://webexapis.com/v1/messages/' + post_id
+                 webex_delete = requests.delete (delete_url, headers={'Authorization': 'Bearer ' + bearer})
+                 action_list.remove (action_list[i])
+                 break
+            print ('Deleted: ' + post_id)
           if banned_counter > 0:
              history_part_1 = '. Automatically banned ' + str(banned_counter) + ' times.'
           else:
@@ -352,7 +367,7 @@ class ExpeCommand(Command):
 })
           response = requests.request("POST", webex_url, headers=headers, data=payload)
           resp = response.json()
-          print (resp)
+          #print (resp)
           message_id=resp['id']
         
         
@@ -360,7 +375,106 @@ class ExpeCommand(Command):
           action_list.append([card_identifier, message_id, card_status, banned_counter, unbanned_counter, calling_id, called_id, parsed_url, first_seen_timer])
           with open(state_machine, 'w+', newline='') as a_f:
             write = csv.writer(a_f) 
-            write.writerows(action_list)              
+            write.writerows(action_list)       
+    
+
+class ExpeCommand(Command):
+
+    def __init__(self):
+        super().__init__(
+            command_keyword="callback___exempt",
+            help_message="Exempt an IP",
+            card=ECHO_CARD_CONTENT)
+
+    def execute(self, message, attachment_actions):
+        """
+        If you want to respond to a submit operation on the card, you
+        would write code here!
+
+        You can return text string here or even another card (Response).
+
+        This sample command function simply echos back the sent message.
+
+        :param message: message with command already stripped
+        :param attachment_actions: attachment_actions object
+        :return: a string or Response object. Use Response if you want to return another card.
+        """
+        #exempt on Expressway
+        
+        room_id = credentials['roomID']
+        jailed_file = credentials['jailed_file']
+        exempt_file = credentials['exempt_file']
+        state_machine = credentials['state_machine']
+        bearer = credentials['bearer']
+        print ('ATTACHMENT ACTIONS: ', attachment_actions, ' TYPE: ', type(attachment_actions))
+        jsonstr = json.dumps (attachment_actions.__dict__)
+        print('TYPE JSONSTR AND JSONSTR ARE: ', type(jsonstr), jsonstr)
+        json_actions = json.loads(jsonstr)
+        ip = json_actions['_json_data']['inputs']['IP']
+        action = json_actions['_json_data']['inputs']['action']
+        expe = json_actions['_json_data']['inputs']['expe']
+        peer = json_actions['_json_data']['inputs']['peer']
+        day = json_actions['_json_data']['inputs']['time']
+        print('IP IS: ', ip, ' ACTION IS: ', action, ' EXPE IS: ', expe, 'PEER IS: ', peer) 
+        
+        if action == 'unban':
+           port = ''
+           expe_ip, peer, peer_with_port = ip_port_info(expe, peer)
+           expe_list = expe.split(':')
+           if len(expe_list) > 1:
+              port = expe_list[1]
+           unban_list = check_unban_all (ip, expe, peer)
+           print ('unban_list is:', unban_list)
+           # get in unban_list all the clusters and not only the original one
+           url_cluster = 'url_cluster1'
+           i = 1
+           while url_cluster in credentials:
+               current_cluster = credentials[url_cluster]
+               other_expe = current_cluster.split('://')[1]
+               if other_expe != expe:
+                  other_peer = other_expe.split(':')[0]
+                  print ('Adding other_expe to unban_list ', other_expe)
+                  print ('Other peer is ', other_peer)
+                  other_cluster_unban_list = check_unban_all (ip, other_expe, other_peer)
+                  unban_list = unban_list + other_cluster_unban_list
+               i += 1
+               url_cluster = 'url_cluster' + str(i)
+           print ('Full unban list is ', unban_list)
+           # this section unbans from the firewall if the IP ban has expired on Expressway
+           if unban_list == []:
+              change_status(room_id, jailed_file, exempt_file, state_machine, bearer, ip, action, expe, peer, day, True)
+           else:
+              l = len(unban_list)
+              for i in range(l):
+                 current_expe = unban_list[i]
+                 print('Current peer to analyze for unban procedures:', current_expe)
+                 if port != '':
+                    expe = current_expe + ':' + port
+                    peer = current_expe
+                 else:
+                    expe = current_expe
+                    peer = current_expe
+                 change_status (room_id, jailed_file, exempt_file, state_machine, bearer, ip, action, expe, peer, day, False)
+           #align state_machine by unbanning the banned items
+           with open(state_machine, newline='') as a_f:
+               reader = csv.reader(a_f)
+               action_list = list(reader)
+               print('align function initiated')
+               for i, v in enumerate(action_list):
+                   if ip in v[0]:
+                      print('analyzing state machine ', v[0])
+                      if action_list[i][2] == 'banned':
+                          print ('align state machine: found ', v[0])
+                          expe_list = v[0].split(':')
+                          expe = expe_list[1]
+                          peer = expe
+                          change_status(room_id, jailed_file, exempt_file, state_machine, bearer, ip, 'unban', expe, peer, day, True)
+
+
+        if action != 'unban':
+           change_status (room_id, jailed_file, exempt_file, state_machine, bearer, ip, action, expe, peer, day, False)
+
+       
   
              
              
