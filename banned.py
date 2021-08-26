@@ -94,39 +94,43 @@ def Expressway_cluster(url, username, secret, my_file, space, bearer, action_fil
        for j in range(lenght):
            if storage[i]['records'][j]['jail']=='sip-auth':
               ip=storage[i]['records'][j]['banned_address']
-              if ip not in array_items:
+              if ip not in array_items: #means that this IP is received for the first time
                   print("New IP found:", ip)
                   #invoke a function to retrieve calling and called and real timestamps
                   calling, called, timestamp_day, timestamp_time, disconnect_cause, unban_flag, found = cdrcheck(url,username,secret,ip,'/api/management/status/call/call')
                   #print (calling, called, timestamp_day, timestamp_time, disconnect_cause)
-                  if found == 1 and unban_flag == 0:
+                  if found == 1 and unban_flag == False:
+                     #found in the CDR and with disconnect cause = 403: must be jailed
                      print('IP jailed')
                      array_items.append(ip) 
                   #print('IP automatically removed from the list')
-                  new_items.append([ip, calling, called, timestamp_day, timestamp_time, current_peer, disconnect_cause, 0, day])
+                  new_items.append([ip, calling, called, timestamp_day, timestamp_time, current_peer, disconnect_cause, 0, day, unban_flag, found])
                   print ('NEW ITEMS LIST IS: ', new_items)
                   newitemflag=1
               else:
                   peer, peer_with_port, parsed_url, expe_ip = local_peer (url, current_peer)
                   card_id = ip + ':' + peer
                   card_identifier_list = column (action_list, 0)
+                  #the IP was already in the global list. Now we have to check why it has been received on a peer (i.e. firewall not working)
                   if card_id not in card_identifier_list:
-                     calling, called, timestamp_day, timestamp_time, disconnect_cause, unban_flag, found = cdrcheck(url,username,secret,ip,'/api/management/status/call/call')
+                     calling, called, timestamp_day, timestamp_time, disconnect_cause, unban_flag, found = cdrcheck(url, username, secret, ip,'/api/management/status/call/call')
                      print ('New IP items list is: ', new_items)
                      new_ip_items = column (new_items, 0)
                      print ('New IP items are: ', new_ip_items)
                      if ip not in new_ip_items:
+                       #the IP has been received on this peer for the first time. Because not included in new_ip_items, it has not been received concurrently on multiple peers. Firewall should be checked.
                        print ('IP: ' + ip + ' IN GLOBAL LIST BUT RECEIVED ON PEER: CHECK FW')
                        check_firewall_flag = 1 #check firewall alert should be sent only if the IP is in the old list (array_items), not if it is has just been found (in this case is in new_items)
                      else:
+                       #the IP has been received on this peer but has also been received concurrently on another peer. The first peer will have the "fw check" flag, while the other won't as it's a repetition
                        check_firewall_flag = 0
-                       print ('IP: ' + ip + ' RECEIVED ON PEER CONCURRENTLY WITH ANOTHER. DO NOT NEED TO CHECK THE FW')
-                     new_peer_items.append([ip, calling, called, timestamp_day, timestamp_time, peer, disconnect_cause, check_firewall_flag, day])
+                       print ('IP: ' + ip + ' RECEIVED ON PEER CONCURRENTLY WITH ANOTHER')
+                     new_peer_items.append([ip, calling, called, timestamp_day, timestamp_time, peer, disconnect_cause, check_firewall_flag, day, unban_flag, found])
                   else:
                      new_ip_items = column (new_items, 0)
                      if ip in new_ip_items:
                        calling, called, timestamp_day, timestamp_time, disconnect_cause, unban_flag, found = cdrcheck(url,username,secret,ip,'/api/management/status/call/call')
-                       new_peer_items.append([ip, calling, called, timestamp_day, timestamp_time, peer, disconnect_cause, 0, ''])
+                       new_peer_items.append([ip, calling, called, timestamp_day, timestamp_time, peer, disconnect_cause, 0, '', unban_flag, found])
                      
    if newitemflag==0:
       print("No new IP found")
@@ -137,15 +141,15 @@ def Expressway_cluster(url, username, secret, my_file, space, bearer, action_fil
       for i in range(l):
          f.write(array_items[i] + "\n")
       f.close()
-      send_card(new_items, url, action_file, today, space, bearer, 0, unban_flag, found) # 0 means that a new IP has been found, so the cards will be sent for every new IP
+      send_card(new_items, url, action_file, today, space, bearer, 0) # 0 means that a new IP has been found, so the cards will be sent for every new IP
    
    if new_peer_items != []:
       print(new_peer_items)
-      send_card (new_peer_items, url, action_file, today, space, bearer, 1, unban_flag, found) #1 means that a new IP peer has been found, so the card will be sent for that IP also
+      send_card (new_peer_items, url, action_file, today, space, bearer, 1) #1 means that a new IP peer has been found, so the card will be sent for that IP also
    print ('New items from banned whike in banned: ', new_items)
    return new_items
 
-def send_card (any_list, url, action_file, today, space, bearer, new_peer, unban_flag, found):
+def send_card (any_list, url, action_file, today, space, bearer, new_peer):
       day = str (today)
       n=len(any_list)
       for index in range(n):
@@ -171,6 +175,8 @@ def send_card (any_list, url, action_file, today, space, bearer, new_peer, unban
         action_list = []
         banned_counter = 0
         unbanned_counter = 0
+        unban_flag = any_list[index][9]
+        found = any_list[index][10]
         
         if os.path.exists(action_file):
            with open(action_file, newline='') as a_f: 
@@ -292,7 +298,7 @@ def cdrcheck(url, username, secret, newip, cdrurl):
     disconnect_reason = 'Unknown'
     if len(r)==0:   
        print("JSON empty answer")
-       return source_alias, destination_alias, day, time, disconnect_reason
+       return source_alias, destination_alias, day, time, disconnect_reason, False, 0
     peers=len(r)
     found=0
     unban_flag = False
@@ -305,6 +311,7 @@ def cdrcheck(url, username, secret, newip, cdrurl):
             #print ('numero chiamata', call)
             call_details=call_record[call]['details'] #string just works fine
             if newip in call_details:
+               disconnect_reason = call_record[call]['disconnect_reason']
                if found == 0:
                   found=1
                   source_alias=call_record[call]['source_alias']
@@ -313,14 +320,14 @@ def cdrcheck(url, username, secret, newip, cdrurl):
                   timestamp_list=timestamp.split(" ")
                   day=timestamp_list[0]
                   time=timestamp_list[1]
-                  disconnect_reason=call_record[call]['disconnect_reason']
                   if disconnect_reason != '403 Forbidden' and disconnect_reason != 'Unknown':
                     unban_flag = True 
-                  #return source_alias, destination_alias, day, time, disconnect_reason
+                    return source_alias, destination_alias, day, time, disconnect_reason, unban_flag, found
                else: 
                   if disconnect_reason != '403 Forbidden' and disconnect_reason != 'Unknown':
                     unban_flag = True
-            
+                    return source_alias, destination_alias, day, time, disconnect_reason, unban_flag, found
+    print ('Found flag at the end of the loop is: ', found)
     return source_alias, destination_alias, day, time, disconnect_reason, unban_flag, found
                
 
