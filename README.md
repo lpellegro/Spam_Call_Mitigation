@@ -1,4 +1,4 @@
-# Spam Call and Toll Fraud Mitigation
+# Spam Call and Toll Fraud Mitigation with Cisco Expressway X14 and above - Internet Firewall Integration Version
 
 Cisco Expressway release X14 is able to mitigate spam calls and toll fraud attempts by jailing the spam IP address, thus offloading Expressway by unwanted calls and reducing the impact of toll fraud. These set of scripts are intended to export the list of banned IPs on a web server in order to feed the Internet firewall and stop the spam traffic at Internet firewall level.
 
